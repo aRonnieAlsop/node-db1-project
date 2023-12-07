@@ -1,6 +1,6 @@
 const Account = require('./accounts-model')
 
-exports.checkAccountPayload = (req, res, next) => {
+const checkAccountPayload = (req, res, next) => {
   // DO YOUR MAGIC
   // Note: you can either write "manual" validation logic
   // or use the Yup library (not currently installed)
@@ -28,11 +28,17 @@ exports.checkAccountPayload = (req, res, next) => {
 
 }
 
-exports.checkAccountNameUnique = (req, res, next) => {
+const checkAccountNameUnique = (req, res, next) => {
+  const name = { name }
+  if (name !== req.body.name) {
+    next()
+  } else {
+    next({ status: 400, message:"that name is taken" })
+  }
   // DO YOUR MAGIC
 }
 
-export async function checkAccountId(req, res, next) {
+async function checkAccountId (req, res, next) {
   try {
     const account = await Account.getById(req.params.id)
     if (account) {
@@ -47,3 +53,9 @@ export async function checkAccountId(req, res, next) {
 //   // DO YOUR MAGIC
 
 // }
+module.exports = {
+  checkAccountId,
+ checkAccountNameUnique,
+  checkAccountPayload
+
+}
