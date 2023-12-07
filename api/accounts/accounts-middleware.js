@@ -6,7 +6,7 @@ const checkAccountPayload = (req, res, next) => {
   // or use the Yup library (not currently installed)
   const { name, budget } = req.body
   if (name && budget) {
-    const tidyName = name.trim()
+    const tidyName = name
     const numberfied = parseInt(budget)
     if (tidyName > 100 || tidyName < 3) {
       next({ 
