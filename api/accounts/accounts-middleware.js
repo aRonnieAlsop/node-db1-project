@@ -49,10 +49,7 @@ async function checkAccountId (req, res, next) {
     }
   } catch (err) { next(err) }
 }
-// exports.checkAccountId = (req, res, next) => {
-//   // DO YOUR MAGIC
 
-// }
 module.exports = {
   checkAccountId,
  checkAccountNameUnique,
