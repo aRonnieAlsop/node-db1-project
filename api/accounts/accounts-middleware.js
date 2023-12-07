@@ -1,51 +1,43 @@
 const Account = require('./accounts-model')
 
+const db = require('../../data/db-config')
+
 const checkAccountPayload = (req, res, next) => {
   // DO YOUR MAGIC
   // Note: you can either write "manual" validation logic
   // or use the Yup library (not currently installed)
   const { name, budget } = req.body
-  if (name && budget) {
-    const tidyName = name
-    const numberfied = parseInt(budget)
-    if (tidyName > 100 || tidyName < 3) {
-      next({ 
-        message:"name of account must be between 3 and 100" 
-      })
-    } else if (typeof(numberfied) === NaN) {
-      next({
-        message: "budget of account must be a number"
-      })
-      } else if (numberfied < 0 || numberfied > 1000000) {
-        message: "budget of account is too large or too small"
-      } else {
-        next()
-      }
-    } else {
-    next({ status: 400, message: "name and budget are required"})
-  }
-  const tidyName = name.trim()
-
-}
-
-const checkAccountNameUnique = (req, res, next) => {
-  const name = { name }
-  if (name !== req.body.name) {
-    next()
+  if (!name || !budget) {
+    next({ status: 400, message: 'name and budget are required' })
+  } else if (name.trim().length < 3 || name.trim().length > 100) {
+    next({ status: 400, message: 'name of account must be between 3 and 100' })
+  } else if (budget < 0 || budget > 1000000) {
+    next({ status: 400, message: 'budget of account is too large or too small' })
   } else {
-    next({ status: 400, message:"that name is taken" })
+    req.body.name = name.trim()
+    next()
   }
-  // DO YOUR MAGIC
 }
 
-async function checkAccountId (req, res, next) {
+const checkAccountNameUnique = async (req, res, next) => {
+  try {
+    const notUnique = await db('accounts').where('name', req.body.name.trim()).first()
+    if (notUnique) {
+      next({ status: 400, message: 'that name is taken' })
+    }
+  } catch (err) {
+    next(err)
+  }
+}
+
+const checkAccountId = async (req, res, next) => {
   try {
     const account = await Account.getById(req.params.id)
-    if (account) {
+    if (!account) {
+      next({ status: 404, message: 'account not found'})
+    } else {
       req.account = account
       next()
-    } else {
-      next({ status: 404, message: "account not found" })
     }
   } catch (err) { next(err) }
 }
