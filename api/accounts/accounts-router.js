@@ -1,7 +1,8 @@
 const Account = require('./accounts-model')
 const { 
         checkAccountId, 
-        checkAccountPayload
+        checkAccountPayload,
+        checkAccountNameUnique,
       } = require('./accounts-middleware')
 
 const router = require('express').Router()
@@ -21,7 +22,7 @@ router.get('/:id', checkAccountId, async (req, res) => {
   res.status(200).json(id)
 })
 
-router.post('/', checkAccountPayload, checkAccountId, async (req, res, next) => {
+router.post('/', checkAccountPayload, checkAccountId, checkAccountNameUnique, async (req, res, next) => {
   // DO YOUR MAGIC
   try {
     const newAccount = await Account.create(req.body)
@@ -31,7 +32,7 @@ router.post('/', checkAccountPayload, checkAccountId, async (req, res, next) => 
   }
 })
 
-router.put('/:id', checkAccountPayload, checkAccountId, async (req, res, next) => {
+router.put('/:id', checkAccountPayload, checkAccountId, checkAccountNameUnique, async (req, res, next) => {
   // DO YOUR MAGIC
   try {
     const updatedAccount = await Account.update(req.params.id, req.body)
