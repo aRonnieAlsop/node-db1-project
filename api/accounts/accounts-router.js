@@ -1,7 +1,6 @@
 const Account = require('./accounts-model')
 const { 
         checkAccountId, 
-        checkAccountNameUnique, 
         checkAccountPayload
       } = require('./accounts-middleware')
 
