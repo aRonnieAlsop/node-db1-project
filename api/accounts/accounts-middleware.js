@@ -3,19 +3,23 @@ const Account = require('./accounts-model')
 const db = require('../../data/db-config')
 
 const checkAccountPayload = (req, res, next) => {
-  // DO YOUR MAGIC
-  // Note: you can either write "manual" validation logic
-  // or use the Yup library (not currently installed)
+  const error = { status: 400 } 
   const { name, budget } = req.body
-  if (!name || !budget) {
-    next({ status: 400, message: 'name and budget are required' })
+  if (name === undefined || budget === undefined ) {
+    error.message = 'name and budget are required'
+    next(error)
+  } else if (typeof name !== 'string') {
+    error.message = 'name of account must be a string'
+    next(error)
   } else if (name.trim().length < 3 || name.trim().length > 100) {
-    next({ status: 400, message: 'name of account must be between 3 and 100' })
+    error.message = 'name of account must be between 3 and 100'
+    next(error)
+  } else if (typeof budget !== 'number' || isNaN(budget)) {
+    error.message = 'budget of account must be a number'
+    next(error)
   } else if (budget < 0 || budget > 1000000) {
-    next({ status: 400, message: 'budget of account is too large or too small' })
-  } else {
-    req.body.name = name.trim()
-    next()
+    error.message = 'budget of account is too large or too small'
+    next(error)
   }
 }
 
