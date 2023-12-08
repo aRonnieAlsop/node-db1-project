@@ -25,14 +25,18 @@ const checkAccountPayload = (req, res, next) => {
 }
 
 const checkAccountNameUnique = async (req, res, next) => {
-  try {
-    const notUnique = await db('accounts').where('name', req.body.name.trim()).first()
-    if (notUnique) {
-      next({ status: 400, message: 'that name is taken' })
-    }
-  } catch (err) {
-    next(err)
+ try {
+  const nothingNew = await db('accounts')
+    .where('name', req.body.name.trim())
+    .first()
+  if (nothingNew) {
+    next({ status: 400, message: 'that name is taken' })
+  } else {
+    next()
   }
+ } catch (err) {
+  next(err)
+ }
 }
 
 const checkAccountId = async (req, res, next) => {
