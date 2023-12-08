@@ -39,7 +39,9 @@ const checkAccountId = async (req, res, next) => {
       req.account = account
       next()
     }
-  } catch (err) { next(err) }
+  } catch (err) { 
+    next(err) 
+  }
 }
 
 module.exports = {
