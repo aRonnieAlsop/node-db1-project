@@ -19,7 +19,7 @@ const updateById = async (id, account) => {
 }
 
 const deleteById = id => {
-  return db('users').where('id', id).delete()
+  return db('accounts').where('id', id).del()
 }
 
 

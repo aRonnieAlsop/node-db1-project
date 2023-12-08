@@ -26,6 +26,7 @@ router.post(
   checkAccountNameUnique, 
   async (req, res, next) => {
   try {
+    req.body.name = req.body.name.trim()
     const newAccount = await Account.create(req.body)
     res.status(201).json(newAccount)
   } catch(err) {
@@ -50,7 +51,7 @@ router.put(
 router.delete('/:id', checkAccountId, async (req, res, next) => {
   try {
     await Account.deleteById(req.params.id)
-    Response.json(req.account)
+    res.json(req.account)
   } catch(err) {
     next(err)
   }
